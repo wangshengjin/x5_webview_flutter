@@ -35,7 +35,9 @@ class X5WebViewActivity : Activity() {
             val headers = intent.getSerializableExtra("headers") as HashMap<String,String>
             loadUrl(intent.getStringExtra("url"), headers)
             settings.javaScriptEnabled = true
-
+            settings.useWideViewPort = true
+            settings.domStorageEnabled = true
+            settings.javaScriptCanOpenWindowsAutomatically = true
             val isUrlIntercept=intent.getBooleanExtra("isUrlIntercept",false)
             webViewClient = object : WebViewClient() {
                 override fun shouldOverrideUrlLoading(view: WebView, url: String?): Boolean {
