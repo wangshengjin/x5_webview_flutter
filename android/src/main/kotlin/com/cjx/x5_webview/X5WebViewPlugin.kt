@@ -22,10 +22,11 @@ import io.flutter.plugin.common.PluginRegistry.Registrar
 import java.io.File
 
 class X5WebViewPlugin : MethodCallHandler, FlutterPlugin, ActivityAware {
-    constructor(mContext: Context,mActivity: Activity){
-        this.mActivity=mActivity
-        this.mContext=mContext
+    constructor(mContext: Context, mActivity: Activity) {
+        this.mActivity = mActivity
+        this.mContext = mContext
     }
+
     constructor()
 
     var mContext: Context? = null
@@ -38,7 +39,7 @@ class X5WebViewPlugin : MethodCallHandler, FlutterPlugin, ActivityAware {
         @JvmStatic
         fun registerWith(registrar: Registrar) {
             val channel = MethodChannel(registrar.messenger(), "com.cjx/x5Video")
-            channel.setMethodCallHandler(X5WebViewPlugin(registrar.context(),registrar.activity()))
+            channel.setMethodCallHandler(X5WebViewPlugin(registrar.context(), registrar.activity()))
             setCallBack(channel, registrar.activity())
             registrar.platformViewRegistry().registerViewFactory("com.cjx/x5WebView", X5WebViewFactory(registrar.messenger(), registrar.activity(), registrar.view()))
         }
@@ -76,7 +77,7 @@ class X5WebViewPlugin : MethodCallHandler, FlutterPlugin, ActivityAware {
                 QbSdk.initTbsSettings(map)
                 QbSdk.initX5Environment(mContext?.applicationContext, object : QbSdk.PreInitCallback {
                     override fun onCoreInitFinished() {
-                        Log.e("X5Sdk","onCoreInitFinished")
+                        Log.e("X5Sdk", "onCoreInitFinished")
                     }
 
                     override fun onViewInitFinished(p0: Boolean) {
@@ -163,13 +164,17 @@ class X5WebViewPlugin : MethodCallHandler, FlutterPlugin, ActivityAware {
             "openWebActivity" -> {
                 val url = call.argument<String>("url")
                 val title = call.argument<String>("title")
-                val headers = call.argument<HashMap<String,String>>("headers")?:HashMap()
-                val isUrlIntercept=call.argument<Boolean>("isUrlIntercept")
+                val headers = call.argument<HashMap<String, String>>("headers") ?: HashMap()
+                val isUrlIntercept = call.argument<Boolean>("isUrlIntercept")
+                val fullsceen = call.argument<Boolean>("fullsceen")
+                val orientation = call.argument<String>("orientation")
                 val intent = Intent(mActivity, X5WebViewActivity::class.java)
                 intent.putExtra("url", url)
                 intent.putExtra("title", title)
                 intent.putExtra("headers", headers)
                 intent.putExtra("isUrlIntercept", isUrlIntercept)
+                intent.putExtra("fullsceen", fullsceen)
+                intent.putExtra("orientation", orientation)
                 mActivity?.startActivity(intent)
                 result.success(null)
             }
@@ -201,7 +206,7 @@ class X5WebViewPlugin : MethodCallHandler, FlutterPlugin, ActivityAware {
         mContext = binding.applicationContext
 
         methodChannel = MethodChannel(binding.binaryMessenger, "com.cjx/x5Video")
-        methodChannel?.setMethodCallHandler(X5WebViewPlugin(mContext!!,mActivity!!))
+        methodChannel?.setMethodCallHandler(X5WebViewPlugin(mContext!!, mActivity!!))
         setCallBack(methodChannel!!, mActivity!!)
         binding.platformViewRegistry.registerViewFactory("com.cjx/x5WebView", X5WebViewFactory(binding.binaryMessenger, mActivity!!, null))
     }
@@ -231,7 +236,7 @@ class X5WebViewPlugin : MethodCallHandler, FlutterPlugin, ActivityAware {
         this.mActivity = binding.activity
         this.mContext = binding.activity.applicationContext
         methodChannel = MethodChannel(mFlutterPluginBinding?.binaryMessenger, "com.cjx/x5Video")
-        methodChannel?.setMethodCallHandler(X5WebViewPlugin(mContext!!,mActivity!!))
+        methodChannel?.setMethodCallHandler(X5WebViewPlugin(mContext!!, mActivity!!))
         setCallBack(methodChannel!!, mActivity!!)
         mFlutterPluginBinding?.platformViewRegistry?.registerViewFactory("com.cjx/x5WebView", X5WebViewFactory(mFlutterPluginBinding?.binaryMessenger!!, mActivity!!, null))
 

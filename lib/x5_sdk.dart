@@ -127,14 +127,20 @@ class X5Sdk {
   }
 
   ///打开简单的x5webview
+  /// @param fullsceen 是否全屏
+  /// @param orientation 屏幕方向 [portrait|landscape]
   static Future<void> openWebActivity(String url,
       {String title,
       Map<String, String> headers,
+      bool fullsceen,
+      String orientation,
       InterceptUrlCallBack callback}) async {
     if (defaultTargetPlatform == TargetPlatform.android) {
       final Map<String, dynamic> params = <String, dynamic>{
         'title': title,
         'url': url,
+        'fullsceen': fullsceen,
+        'orientation': orientation,
         'headers': headers,
         'isUrlIntercept': callback != null
       };
